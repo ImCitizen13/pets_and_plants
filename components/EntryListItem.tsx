@@ -22,15 +22,30 @@ export default function EntryListItem({
       fromDate={new Date(item.lastDone).getTime()}
       fillColor={
         item.type === "pet"
-          ? Colors.light.secondaryBackground
+          ? item.animalType === AnimalType.DOG
+            ? Colors.light.secondaryBackground
+            : Colors.light.catBackground
           : Colors.light.plantBackground
       }
       backgroundColor={Colors.light.background}
       style={styles.card}
     >
       <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>{item.name}</Text>
-        {/* <Text style={styles.typeIcon}>{item.type === "pet" ? "🐶" : "🌱"}</Text> */}
+        <Text
+          style={[
+            styles.cardTitle,
+            {
+              color:
+                item.type === "plant"
+                  ? Colors.light.darkerText
+                  : item.animalType === AnimalType.DOG
+                  ? Colors.light.text
+                  : "black",
+            },
+          ]}
+        >
+          {item.name}
+        </Text>
         <Image
           contentFit="contain"
           source={
@@ -79,9 +94,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardTitle: {
+    fontFamily: "AlfaSlabOne",
     fontSize: 28,
-
-    fontWeight: "800",
+    fontWeight: "500",
   },
   typeIcon: {
     fontSize: 22,

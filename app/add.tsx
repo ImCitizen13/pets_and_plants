@@ -1,4 +1,7 @@
 import AnimalChoice from "@/components/AnimalChoice";
+import FrequencyView from "@/components/FrequencyView";
+import ThemedText from "@/components/Themed";
+import TypeSwitch from "@/components/TypeSwitch";
 import { Colors } from "@/constants/Colors";
 import { saveEntry } from "@/storage/localStorage";
 import { AnimalType, Entry } from "@/types";
@@ -7,8 +10,8 @@ import {
   scheduleReminder,
 } from "@/utils/notifications";
 import { getTimeInMiliseconds } from "@/utils/timeOperations";
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { FontAwesome } from "@expo/vector-icons";
+import { router, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Alert,
@@ -17,10 +20,9 @@ import {
   Platform,
   StyleSheet,
   Switch,
-  Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 export default function AddScreen() {
   const [name, setName] = useState("");
@@ -36,8 +38,6 @@ export default function AddScreen() {
     frequency: false,
   });
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-
-
 
   // Open bottom sheet when type changes to "pet"
   useEffect(() => {
@@ -116,17 +116,51 @@ export default function AddScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={100}
     >
+      <Stack.Screen
+        options={{
+          headerBackground: () => (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: Colors.light.background,
+                borderBottomWidth: 5,
+                borderColor: Colors.light.text,
+              }}
+            />
+          ),
+          headerTitle: () => (
+            <ThemedText
+              style={{
+                fontFamily: "AlfaSlabOne",
+                fontSize: 24,
+                fontWeight: "500",
+                color: Colors.light.text,
+              }}
+            >
+              New Entry
+            </ThemedText>
+          ),
+          headerBackVisible: false,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <FontAwesome
+                name="arrow-left"
+                size={24}
+                color={Colors.light.text}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <Animated.ScrollView contentContainerStyle={styles.scrollContent}>
         <Animated.View
           style={{
             backgroundColor: Colors.light.background,
           }}
         >
-          <Text style={styles.title}>Add New Entry</Text>
-
           {/* Name Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Name</Text>
+            <ThemedText style={styles.label}>Name</ThemedText>
             <TextInput
               style={[styles.input, errors.name && styles.inputError]}
               value={name}
@@ -135,68 +169,12 @@ export default function AddScreen() {
               placeholderTextColor="#999"
             />
             {errors.name && (
-              <Text style={styles.errorText}>Name is required</Text>
+              <ThemedText style={styles.errorText}>Name is required</ThemedText>
             )}
           </View>
 
           {/* Type Selection */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Type</Text>
-            <View style={styles.typeContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.typeButton,
-                  type === "pet" && styles.typeButtonActive,
-                ]}
-                onPress={() => setType("pet")}
-              >
-                <Ionicons
-                  name="paw"
-                  size={18}
-                  color={
-                    type === "pet"
-                      ? "white"
-                      : type === "plant"
-                      ? Colors.light.plantBackground
-                      : Colors.light.text
-                  }
-                />
-                <Text
-                  style={[
-                    styles.typeText,
-                    type === "pet" && styles.typeTextActive,
-                  ]}
-                >
-                  Pet
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.typeButton,
-
-                  type === "plant" && styles.typeButtonActive,
-                ]}
-                onPress={() => setType("plant")}
-              >
-                <Ionicons
-                  name="leaf"
-                  size={18}
-                  color={
-                    type === "plant" ? "white" : Colors.light.plantBackground
-                  }
-                />
-                <Text
-                  style={[
-                    styles.typeText,
-                    type === "plant" && styles.typeTextActive,
-                  ]}
-                >
-                  Plant
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <TypeSwitch type={type} setType={setType} />
 
           {/* Animal Type Display (only shown when pet is selected and type is chosen) */}
           {type === "pet" && (
@@ -208,59 +186,22 @@ export default function AddScreen() {
 
           {/* Frequency Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Frequency</Text>
-            <View style={styles.timeInputContainer}>
-              <View style={styles.timeInputGroup}>
-                <TextInput
-                  style={[
-                    styles.timeInput,
-                    errors.frequency && !days && styles.inputError,
-                  ]}
-                  value={days}
-                  onChangeText={setDays}
-                  placeholder="0"
-                  placeholderTextColor="#999"
-                  keyboardType="numeric"
-                />
-                <Text style={styles.timeLabel}>Days</Text>
-              </View>
-
-              <View style={styles.timeInputGroup}>
-                <TextInput
-                  style={[
-                    styles.timeInput,
-                    errors.frequency && !hours && styles.inputError,
-                  ]}
-                  value={hours}
-                  onChangeText={setHours}
-                  placeholder="0"
-                  placeholderTextColor="#999"
-                  keyboardType="numeric"
-                />
-                <Text style={styles.timeLabel}>Hours</Text>
-              </View>
-
-              <View style={styles.timeInputGroup}>
-                <TextInput
-                  style={[
-                    styles.timeInput,
-                    errors.frequency && !minutes && styles.inputError,
-                  ]}
-                  value={minutes}
-                  onChangeText={setMinutes}
-                  placeholder="0"
-                  placeholderTextColor="#999"
-                  keyboardType="numeric"
-                />
-                <Text style={styles.timeLabel}>Mins</Text>
-              </View>
-            </View>
+            <ThemedText style={styles.label}>Frequency</ThemedText>
+            <FrequencyView
+              days={days}
+              hours={hours}
+              minutes={minutes}
+              setDays={setDays}
+              setHours={setHours}
+              setMinutes={setMinutes}
+              errors={errors}
+            />
 
             {errors.frequency && (
-              <Text style={styles.errorText}>
+              <ThemedText style={styles.errorText}>
                 Please enter a valid frequency (at least one field must be
                 greater than 0)
-              </Text>
+              </ThemedText>
             )}
           </View>
 
@@ -268,12 +209,14 @@ export default function AddScreen() {
           <View style={styles.inputContainer}>
             <View style={styles.switchRow}>
               <View>
-                <Text style={styles.label}>Enable Notifications</Text>
-                <Text style={[styles.helpText, { marginBottom: 0 }]}>
-                  `Get reminders when its time to{" "}
+                <ThemedText style={styles.label}>
+                  Enable Notifications
+                </ThemedText>
+                <ThemedText style={[styles.helpText, { marginBottom: 0 }]}>
+                  Get reminders when its time to{" "}
                   {type === "pet" ? "feed" : "water"}{" "}
-                  {type === "pet" ? "your pet" : "your plant"}`
-                </Text>
+                  {type === "pet" ? "your pet" : "your plant"}
+                </ThemedText>
               </View>
               <Switch
                 value={notificationsEnabled}
@@ -297,16 +240,9 @@ export default function AddScreen() {
             </View>
           </View>
 
-          {/* Help Text */}
-          <Text style={styles.helpText}>
-            {type === "pet"
-              ? "How often does your pet need to be fed?"
-              : "How often does your plant need to be watered?"}
-          </Text>
-
           {/* Submit Button */}
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Save</Text>
+            <ThemedText style={styles.buttonText}>Save</ThemedText>
           </TouchableOpacity>
 
           {/* Cancel Button */}
@@ -314,7 +250,7 @@ export default function AddScreen() {
             style={styles.cancelButton}
             onPress={() => router.back()}
           >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+            <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
           </TouchableOpacity>
         </Animated.View>
       </Animated.ScrollView>
@@ -357,10 +293,15 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: "#f9f9f9",
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: Colors.light.text,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
+    fontFamily: "AlfaSlabOne",
   },
   timeInputContainer: {
     flexDirection: "row",
@@ -432,6 +373,11 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: "center",
     marginTop: 10,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderColor: Colors.light.text,
   },
   buttonText: {
     color: "white",
@@ -444,6 +390,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
     backgroundColor: "transparent",
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderColor: Colors.light.text,
   },
   cancelButtonText: {
     color: Colors.light.tint,
@@ -451,9 +402,17 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   switchRow: {
-    flexDirection: "row",
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderColor: Colors.light.text,
+    borderRadius: 8,
+    padding: 12,
+    flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
     marginVertical: 8,
+    gap: 8,
   },
 });

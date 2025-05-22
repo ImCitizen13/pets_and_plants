@@ -19,3 +19,9 @@ export async function updateEntry(entry: Entry) {
   const updated = data.map((e) => (e.id === entry.id ? entry : e));
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 }
+
+export async function deleteEntry(entry: Entry) {
+  const data = await getAllEntries();
+  const updated = data.filter((e) => e.id !== entry.id);
+  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+}

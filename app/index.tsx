@@ -5,8 +5,8 @@ import { getAllEntries, updateEntry } from "@/storage/localStorage";
 import { Entry } from "@/types";
 import { cancelReminder, scheduleReminder } from "@/utils/notifications";
 import { getTimeInMiliseconds } from "@/utils/timeOperations";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { FontAwesome } from "@expo/vector-icons";
+import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -26,10 +26,6 @@ export default function Home() {
   useEffect(() => {
     loadEntries();
   }, []);
-
-  useEffect(() => {
-    console.log("entries changed");
-  }, [entries]);
 
   useEffect(() => {
     if (lastNotification) {
@@ -87,6 +83,37 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerBackground: () => (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: Colors.light.background,
+                borderBottomWidth: 5,
+                borderColor: Colors.light.text,
+              }}
+            />
+          ),
+          headerTitle: () => (
+            <Text
+              style={{
+                fontFamily: "AlfaSlabOne",
+                fontSize: 24,
+                fontWeight: "500",
+                color: Colors.light.text,
+              }}
+            >
+              Pets & Plants
+            </Text>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.push("/add")}>
+              <FontAwesome name="plus" size={24} color={Colors.light.text} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <Animated.FlatList
         data={entries}
         extraData={entries}
@@ -116,15 +143,13 @@ export default function Home() {
           style={styles.addButton}
           onPress={() => router.push("/add")}
         >
-          <Ionicons
-            name="add"
+          <FontAwesome
+            name="plus"
             size={30}
-            color="white"
+            color={Colors.light.background}
             style={{
               shadowColor: "black",
               shadowOffset: { width: 0, height: 2 },
-              
-              
             }}
           />
         </TouchableOpacity>

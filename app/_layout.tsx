@@ -22,7 +22,10 @@ import "react-native-reanimated";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
+    AlfaSlabOne: require("../assets/fonts/AlfaSlabOne-Regular.ttf"),
+    Love: require("../assets/fonts/LoveYaLikeASister-Regular.ttf"),
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Bangers: require("../assets/fonts/Bangers-Regular.ttf"),
   });
 
   if (!loaded) {
@@ -32,9 +35,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
-      <NotificationProvider>
-        <AppContent />
-      </NotificationProvider>
+        <NotificationProvider>
+          <AppContent />
+        </NotificationProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
