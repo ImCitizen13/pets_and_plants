@@ -1,7 +1,9 @@
+import { NotificationProvider, useNotification } from "@/contexts/NotificationContext";
 import {
   getNotificationPermissionStatus,
   requestNotificationPermissions,
   setUpNotifications,
+  useNotificationListeners,
 } from "@/utils/notifications";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -18,12 +20,37 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
+  if (!loaded) {
+    return null;
+  }
+
+  return (
+    <NotificationProvider>
+      <AppContent />
+    </NotificationProvider>
+  );
+}
+
+function AppContent() {
+  const { setLastNotification } = useNotification();
+
   // Set up notification handlers when the app is first loaded
   useEffect(() => {
-    if (loaded) {
-      setUpNotifications();
+    setUpNotifications();
+  }, []);
+
+  // Add this to implement notification listeners
+  useNotificationListeners(
+    // This function handles notifications received while app is open
+    (notification) => {
+      setLastNotification(notification);
+    },
+    // This function handles when user taps on a notification
+    (response) => {
+      console.log("User tapped notification:", response);
+      // Handle response...
     }
-  }, [loaded]);
+  );
 
   // Check and request notification permissions when the app starts
   useEffect(() => {
@@ -60,15 +87,8 @@ export default function RootLayout() {
       }
     };
 
-    if (loaded) {
-      checkNotificationPermissions();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+    checkNotificationPermissions();
+  }, []);
 
   return (
     <ThemeProvider value={DefaultTheme}>
@@ -84,6 +104,10 @@ export default function RootLayout() {
         <Stack.Screen
           name="settings"
           options={{ headerShown: true, headerTitle: "Settings" }}
+        />
+        <Stack.Screen
+          name="entry"
+          options={{ headerShown: true, headerTitle: "Entry" }}
         />
         <Stack.Screen name="+not-found" />
       </Stack>

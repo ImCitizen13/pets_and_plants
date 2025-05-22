@@ -58,7 +58,6 @@ export default function ProgressCountdown({
     // Set initial progress based on current time between fromDate and targetDate
     progressAnim.setValue(initialProgress);
 
-    console.log("Initial progress:", initialProgress, "Total span:", totalTimeSpan, "Elapsed:", timeElapsed);
 
     // Only animate the remaining portion
     if (remaining > 0 && initialProgress < 1) {

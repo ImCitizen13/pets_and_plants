@@ -1,6 +1,54 @@
 import { Entry } from "@/types";
 import * as Notifications from "expo-notifications";
+import { useEffect, useRef } from "react";
 import { Platform } from "react-native";
+
+// Add these interface definitions
+interface NotificationData {
+  type?: string;
+  entryId?: string;
+  [key: string]: any;
+}
+
+// Fixed notification listeners hook
+export function useNotificationListeners(
+  onNotificationReceived?: (notification: Notifications.Notification) => void,
+  onNotificationResponse?: (
+    response: Notifications.NotificationResponse
+  ) => void
+) {
+  const notificationListener = useRef<Notifications.EventSubscription | null>(
+    null
+  );
+  const responseListener = useRef<Notifications.EventSubscription | null>(null);
+
+  useEffect(() => {
+    // Listener for when notification is received while app is foregrounded
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        if (onNotificationReceived) {
+          onNotificationReceived(notification);
+        }
+      });
+
+    // Listener for user interactions with notification
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        const data = response.notification.request.content
+          .data as NotificationData;
+
+        if (onNotificationResponse) {
+          onNotificationResponse(response);
+        }
+      });
+
+    // Clean up listeners on unmount
+    return () => {
+      notificationListener.current && notificationListener.current.remove();
+      responseListener.current && responseListener.current.remove();
+    };
+  }, [onNotificationReceived, onNotificationResponse]);
+}
 
 export async function getNotificationPermissionStatus() {
   const { status } = await Notifications.getPermissionsAsync();
@@ -49,14 +97,17 @@ export async function scheduleReminder(entry: Entry) {
   // Only schedule if notifications are enabled for this entry
   if (entry.notificationsEnabled === false) return;
 
-  // const triggerTime = new Date(Date.now() + entry.frequency * 60 * 60 * 1000);
-
   await Notifications.scheduleNotificationAsync({
     content: {
       title: `${entry.name} needs care!`,
       body: `It's time to ${entry.type === "pet" ? "feed" : "water"} ${
         entry.name
       }`,
+      data: {
+        type: "reminder",
+        entryId: entry.id,
+        entryType: entry.type,
+      },
     },
     trigger: {
       type: "date",
