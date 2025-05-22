@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
+import { Colors } from "@/constants/Colors";
 import { Entry } from "@/types";
 import React, { useEffect, useState } from "react";
 
@@ -12,11 +13,15 @@ export default function MarkAsDoneButton({
 }) {
   const [disabled, setDisabled] = useState(false);
   useEffect(() => {
-    const shouldDisable =
-      new Date(item.timeToNextAction).valueOf() > new Date().valueOf() ? true : false;
+    const timeto = new Date(item.timeToNextAction).valueOf();
+    const now = new Date().valueOf();
+    console.log("time to", timeto, now);
+    const diff = timeto - now;
+    console.log("diff", diff);
+    const shouldDisable = diff > 5000 ? true : false;
     setDisabled(shouldDisable);
   }, [item]);
-
+  useEffect(() => {}, [disabled, item]);
   return (
     <TouchableOpacity
       disabled={disabled}
@@ -30,10 +35,15 @@ export default function MarkAsDoneButton({
 
 const styles = StyleSheet.create({
   doneButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: Colors.light.tint,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
+    borderRightWidth: 4,
+    borderBottomWidth: 4,
+    borderLeftWidth: 0.5,
+    borderTopWidth: 0.5,
+    borderColor: Colors.light.text,
   },
   doneButtonText: {
     color: "white",

@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     position: "relative",
     borderLeftWidth: 4,
-    borderLeftColor: "transparent",
+    borderLeftColor: Colors.light.secondaryBackground,
   },
   cardAttention: {
     borderLeftColor: "#FFC107", // Warning yellow

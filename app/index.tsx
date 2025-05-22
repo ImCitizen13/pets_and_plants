@@ -9,13 +9,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Animated,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Animated,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function Home() {
@@ -23,14 +23,17 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { lastNotification } = useNotification();
-  const [refetch, setRefetch] = useState(false);
   useEffect(() => {
     loadEntries();
   }, []);
 
   useEffect(() => {
+    console.log("entries changed");
+  }, [entries]);
+
+  useEffect(() => {
     if (lastNotification) {
-      
+      console.log("Got it ");
       loadEntries();
     }
   }, [lastNotification]);
@@ -84,9 +87,9 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-
       <Animated.FlatList
         data={entries}
+        extraData={entries}
         renderItem={({ item }) => (
           <EntryListItem item={item} handleMarkAsDone={handleMarkAsDone} />
         )}
@@ -96,9 +99,7 @@ export default function Home() {
           <RefreshControl
             refreshing={loading}
             onRefresh={() => {
-              console.log("Refreshing");
               loadEntries();
-              setRefetch(false);
             }}
           />
         }
@@ -111,19 +112,21 @@ export default function Home() {
       />
 
       <View style={styles.actionButtonsContainer}>
-
-        <TouchableOpacity
-          style={styles.settingsButton}
-          onPress={() => router.push("/settings")}
-        >
-          <Ionicons name="settings-outline" size={24} color="white" />
-        </TouchableOpacity>
-
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => router.push("/add")}
         >
-          <Ionicons name="add" size={24} color="white" />
+          <Ionicons
+            name="add"
+            size={30}
+            color="white"
+            style={{
+              shadowColor: "black",
+              shadowOffset: { width: 0, height: 2 },
+              
+              
+            }}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -133,7 +136,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.light.background,
   },
   centered: {
     flex: 1,
@@ -162,6 +165,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   addButton: {
+    borderRightWidth: 4,
+    borderBottomWidth: 4,
+    borderLeftWidth: 1,
+    borderTopWidth: 2,
+    borderColor: Colors.light.text,
     width: 56,
     height: 56,
     borderRadius: 28,

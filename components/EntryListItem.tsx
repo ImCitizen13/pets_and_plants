@@ -1,5 +1,7 @@
+import { Colors } from "@/constants/Colors";
 import { Entry } from "@/types";
 import { getTimeRemaining } from "@/utils/timeOperations";
+import { Image } from "expo-image";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MarkAsDoneButton from "./MarkAsDoneButton";
@@ -18,13 +20,26 @@ export default function EntryListItem({
     <ProgressCountdown
       targetDate={new Date(item.timeToNextAction).getTime()}
       fromDate={new Date(item.lastDone).getTime()}
-      fillColor="white"
-      backgroundColor="gray"
+      fillColor={
+        item.type === "pet"
+          ? Colors.light.secondaryBackground
+          : Colors.light.plantBackground
+      }
+      backgroundColor={Colors.light.background}
       style={styles.card}
     >
       <View style={styles.cardHeader}>
         <Text style={styles.cardTitle}>{item.name}</Text>
-        <Text style={styles.typeIcon}>{item.type === "pet" ? "🐶" : "🌱"}</Text>
+        {/* <Text style={styles.typeIcon}>{item.type === "pet" ? "🐶" : "🌱"}</Text> */}
+        <Image
+          contentFit="contain"
+          source={
+            item.type === "pet"
+              ? require("@/assets/images/dog.png")
+              : require("@/assets/images/plant.png")
+          }
+          style={{ width: 60, height: 60 }}
+        />
       </View>
 
       <View style={styles.cardContent}>
@@ -42,10 +57,14 @@ const styles = StyleSheet.create({
   card: {
     // backgroundColor: "white",
     borderRadius: 12,
-    // padding: 16,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderColor: Colors.light.text,
     flex: 1,
     marginBottom: 12,
-    shadowColor: "#000",
+    shadowColor: Colors.light.secondaryBackground,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
@@ -58,8 +77,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardTitle: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 28,
+
+    fontWeight: "800",
   },
   typeIcon: {
     fontSize: 22,

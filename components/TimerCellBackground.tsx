@@ -8,6 +8,7 @@ import {
   View,
   ViewStyle
 } from "react-native";
+import { ThemedView } from "./ThemedView";
 
 type ProgressCountdownProps = {
   fromDate: number;
@@ -134,7 +135,8 @@ export default function ProgressCountdown({
   });
 
   return (
-    <View
+    <ThemedView
+      variant="card"
       style={[
         styles.container,
         { width: "100%", height: "100%", backgroundColor },
@@ -165,7 +167,7 @@ export default function ProgressCountdown({
           {formatCountdown()}
         </Text>
       </View> */}
-    </View>
+    </ThemedView>
   );
 }
 
@@ -181,6 +183,7 @@ const styles = StyleSheet.create({
     top: 0,
     opacity: 1,
     zIndex: 1,
+    borderRadius: 8,
   },
   foregroundContent: {
     position: "relative",
