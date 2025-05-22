@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/Colors";
-import { Entry } from "@/types";
+import { AnimalType, Entry } from "@/types";
 import { getTimeRemaining } from "@/utils/timeOperations";
 import { Image } from "expo-image";
 import React from "react";
@@ -35,7 +35,9 @@ export default function EntryListItem({
           contentFit="contain"
           source={
             item.type === "pet"
-              ? require("@/assets/images/dog.png")
+              ? item.animalType === AnimalType.DOG
+                ? require("@/assets/images/dog.png")
+                : require("@/assets/images/cat.png")
               : require("@/assets/images/plant.png")
           }
           style={{ width: 60, height: 60 }}

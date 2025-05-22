@@ -1,16 +1,21 @@
-import { NotificationProvider, useNotification } from "@/contexts/NotificationContext";
+import {
+  NotificationProvider,
+  useNotification,
+} from "@/contexts/NotificationContext";
 import {
   getNotificationPermissionStatus,
   requestNotificationPermissions,
   setUpNotifications,
   useNotificationListeners,
 } from "@/utils/notifications";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { Alert, Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
 // import { useColorScheme } from '@/hooks/useColorScheme';
@@ -25,9 +30,13 @@ export default function RootLayout() {
   }
 
   return (
-    <NotificationProvider>
-      <AppContent />
-    </NotificationProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+      <NotificationProvider>
+        <AppContent />
+      </NotificationProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
 

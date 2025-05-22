@@ -1,6 +1,7 @@
+import AnimalChoice from "@/components/AnimalChoice";
 import { Colors } from "@/constants/Colors";
 import { saveEntry } from "@/storage/localStorage";
-import { Entry } from "@/types";
+import { AnimalType, Entry } from "@/types";
 import {
   requestNotificationPermissions,
   scheduleReminder,
@@ -8,23 +9,25 @@ import {
 import { getTimeInMiliseconds } from "@/utils/timeOperations";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
+  Animated,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   Switch,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-
 export default function AddScreen() {
   const [name, setName] = useState("");
   const [type, setType] = useState<"pet" | "plant">("pet");
+  const [animalType, setAnimalType] = useState<AnimalType | undefined>(
+    undefined
+  );
   const [days, setDays] = useState("");
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
@@ -33,6 +36,16 @@ export default function AddScreen() {
     frequency: false,
   });
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+
+
+
+  // Open bottom sheet when type changes to "pet"
+  useEffect(() => {
+    // If type changes to "plant", reset animalType
+    if (type === "plant") {
+      setAnimalType(undefined);
+    }
+  }, [type]);
 
   const validateForm = (): boolean => {
     const hasFrequency =
@@ -74,6 +87,11 @@ export default function AddScreen() {
         lastDone: 0,
       };
 
+      // Add animalType if type is pet and animalType is selected
+      if (type === "pet" && animalType) {
+        newEntry.animalType = animalType;
+      }
+
       // Save to storage
       await saveEntry(newEntry);
 
@@ -98,8 +116,12 @@ export default function AddScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={100}
     >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.form}>
+      <Animated.ScrollView contentContainerStyle={styles.scrollContent}>
+        <Animated.View
+          style={{
+            backgroundColor: Colors.light.background,
+          }}
+        >
           <Text style={styles.title}>Add New Entry</Text>
 
           {/* Name Input */}
@@ -131,7 +153,13 @@ export default function AddScreen() {
                 <Ionicons
                   name="paw"
                   size={18}
-                  color={type === "pet" ? "white" : Colors.light.text}
+                  color={
+                    type === "pet"
+                      ? "white"
+                      : type === "plant"
+                      ? Colors.light.plantBackground
+                      : Colors.light.text
+                  }
                 />
                 <Text
                   style={[
@@ -146,6 +174,7 @@ export default function AddScreen() {
               <TouchableOpacity
                 style={[
                   styles.typeButton,
+
                   type === "plant" && styles.typeButtonActive,
                 ]}
                 onPress={() => setType("plant")}
@@ -153,7 +182,9 @@ export default function AddScreen() {
                 <Ionicons
                   name="leaf"
                   size={18}
-                  color={type === "plant" ? "white" : Colors.light.text}
+                  color={
+                    type === "plant" ? "white" : Colors.light.plantBackground
+                  }
                 />
                 <Text
                   style={[
@@ -166,6 +197,14 @@ export default function AddScreen() {
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* Animal Type Display (only shown when pet is selected and type is chosen) */}
+          {type === "pet" && (
+            <AnimalChoice
+              animalType={animalType}
+              setAnimalType={setAnimalType}
+            />
+          )}
 
           {/* Frequency Input */}
           <View style={styles.inputContainer}>
@@ -277,8 +316,10 @@ export default function AddScreen() {
           >
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </Animated.View>
+      </Animated.ScrollView>
+
+      {/* Bottom Sheet for Animal Type Selection */}
     </KeyboardAvoidingView>
   );
 }
@@ -288,19 +329,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
   scrollContent: {
     flexGrow: 1,
     padding: 16,
-  },
-  form: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    backgroundColor: Colors.light.background,
   },
   title: {
     fontSize: 24,
