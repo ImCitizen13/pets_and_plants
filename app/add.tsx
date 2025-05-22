@@ -84,7 +84,7 @@ export default function AddScreen() {
         frequency: totalFrequencyInHours,
         notificationsEnabled,
         timeToNextAction: getTimeInMiliseconds(totalFrequencyInHours),
-        lastDone: 0,
+        lastDone: Date.now(),
       };
 
       // Add animalType if type is pet and animalType is selected

@@ -82,7 +82,7 @@ export default function Home() {
   }
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={styles.container}>
       <Stack.Screen
         options={{
           headerBackground: () => (
@@ -138,7 +138,7 @@ export default function Home() {
         }
       />
 
-      <View style={styles.actionButtonsContainer}>
+      {/* <Animated.View style={styles.actionButtonsContainer}>
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => router.push("/add")}
@@ -153,8 +153,8 @@ export default function Home() {
             }}
           />
         </TouchableOpacity>
-      </View>
-    </View>
+      </Animated.View> */}
+    </Animated.View>
   );
 }
 

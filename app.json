@@ -2,17 +2,19 @@
   "expo": {
     "name": "pets_and_plants",
     "slug": "pets_and_plants",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "petsandplants",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "version": "0.0.1",
       "supportsTablet": true,
       "bundleIdentifier": "com.meltohamy.pets-and-plants"
     },
     "android": {
+      "version": "0.0.1",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -40,6 +42,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7be4b28e-e2dd-4414-ad26-fe3fe985f831"
+      }
+    },
+    "owner": "meltohamy"
   }
 }

@@ -2,8 +2,8 @@ import { Colors } from "@/constants/Colors";
 import { AnimalType, Entry } from "@/types";
 import { getTimeRemaining } from "@/utils/timeOperations";
 import { Image } from "expo-image";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { Animated, StyleSheet, Text, View } from "react-native";
 import MarkAsDoneButton from "./MarkAsDoneButton";
 import ProgressCountdown from "./TimerCellBackground";
 const getActionText = (type: "pet" | "plant") => {
@@ -16,6 +16,35 @@ export default function EntryListItem({
   item: Entry;
   handleMarkAsDone: (item: Entry) => void;
 }) {
+  const shakeAnimation = React.useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const shake = Animated.sequence([
+      ...Array(5)
+        .fill(null)
+        .map(() =>
+          Animated.sequence([
+            Animated.timing(shakeAnimation, {
+              toValue: 45,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+            Animated.timing(shakeAnimation, {
+              toValue: -45,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+            Animated.timing(shakeAnimation, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+          ])
+        ),
+    ]);
+
+    shake.start();
+  }, []);
   return (
     <ProgressCountdown
       targetDate={new Date(item.timeToNextAction).getTime()}
@@ -30,7 +59,7 @@ export default function EntryListItem({
       backgroundColor={Colors.light.background}
       style={styles.card}
     >
-      <View style={styles.cardHeader}>
+      <Animated.View style={styles.cardHeader}>
         <Text
           style={[
             styles.cardTitle,
@@ -46,18 +75,24 @@ export default function EntryListItem({
         >
           {item.name}
         </Text>
-        <Image
-          contentFit="contain"
-          source={
-            item.type === "pet"
-              ? item.animalType === AnimalType.DOG
-                ? require("@/assets/images/dog.png")
-                : require("@/assets/images/cat.png")
-              : require("@/assets/images/plant.png")
-          }
-          style={{ width: 60, height: 60 }}
-        />
-      </View>
+
+        <Animated.View
+          // entering={shake}
+          style={{ transform: [{ rotate: `${shakeAnimation}deg` }] }}
+        >
+          <Image
+            contentFit="contain"
+            source={
+              item.type === "pet"
+                ? item.animalType === AnimalType.DOG
+                  ? require("@/assets/images/dog.png")
+                  : require("@/assets/images/cat.png")
+                : require("@/assets/images/plant.png")
+            }
+            style={{ width: 60, height: 60 }}
+          />
+        </Animated.View>
+      </Animated.View>
 
       <View style={styles.cardContent}>
         <Text style={styles.timeRemaining}>
