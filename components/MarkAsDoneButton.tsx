@@ -14,8 +14,8 @@ export default function MarkAsDoneButton({
 }) {
   const [disabled, setDisabled] = useState(false);
   useEffect(() => {
-    const timeto = new Date(item.timeToNextAction).valueOf();
-    const now = new Date().valueOf();
+    const timeto = item.timeToNextAction;
+    const now = Date.now();
     const diff = timeto - now;
     const shouldDisable = diff > 5000 ? true : false;
     setDisabled(shouldDisable);

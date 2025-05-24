@@ -4,7 +4,7 @@ export type Entry = {
     type: "pet" | "plant";
     animalType?: AnimalType;
     frequency: number; // in hours
-    timeToNextAction: Date; // in hours
+    timeToNextAction: number; // timestamp of next action
     lastDone: number; // timestamp
     notificationsEnabled?: boolean;
   };

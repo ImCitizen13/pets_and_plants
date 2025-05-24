@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
+  Platform,
   RefreshControl,
   StyleSheet,
   Text,
@@ -107,11 +108,12 @@ export default function Home() {
               Pets & Plants
             </Text>
           ),
-          headerRight: () => (
-            <TouchableOpacity onPress={() => router.push("/add")}>
-              <FontAwesome name="plus" size={24} color={Colors.light.text} />
-            </TouchableOpacity>
-          ),
+          headerRight: () =>
+            Platform.OS === "ios" && (
+              <TouchableOpacity onPress={() => router.push("/add")}>
+                <FontAwesome name="plus" size={24} color={Colors.light.text} />
+              </TouchableOpacity>
+            ),
         }}
       />
       <Animated.FlatList
@@ -137,8 +139,8 @@ export default function Home() {
           </View>
         }
       />
-
-      {/* <Animated.View style={styles.actionButtonsContainer}>
+      {Platform.OS === "android" && (
+      <Animated.View style={styles.actionButtonsContainer}>
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => router.push("/add")}
@@ -152,8 +154,9 @@ export default function Home() {
               shadowOffset: { width: 0, height: 2 },
             }}
           />
-        </TouchableOpacity>
-      </Animated.View> */}
+          </TouchableOpacity>
+        </Animated.View>
+      )}
     </Animated.View>
   );
 }

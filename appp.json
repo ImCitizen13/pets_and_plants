@@ -11,13 +11,19 @@
     "ios": {
       "version": "0.0.1",
       "supportsTablet": true,
+      "icon": {
+        "light": "./assets/icons/ios-light.png",
+        "dark": "./assets/icons/ios-dark.png",
+        "tinted": "./assets/icons/ios-tinted.png"
+      },
       "bundleIdentifier": "com.meltohamy.pets-and-plants"
     },
     "android": {
       "version": "0.0.1",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "monochromeImage": "./assets/icons/adaptive-icon.png",
+        "backgroundColor": "#FEEFD9"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.meltohamy.petsandplants"
@@ -32,10 +38,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash-icon-light.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#FEEFD9"
         }
       ],
       "expo-font"

@@ -111,7 +111,7 @@ export async function scheduleReminder(entry: Entry) {
     },
     trigger: {
       type: "date",
-      date: entry.timeToNextAction,
+      date: new Date(entry.timeToNextAction),
     } as Notifications.DateTriggerInput,
   });
 }

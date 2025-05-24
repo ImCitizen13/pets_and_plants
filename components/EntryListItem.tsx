@@ -47,8 +47,8 @@ export default function EntryListItem({
   }, []);
   return (
     <ProgressCountdown
-      targetDate={new Date(item.timeToNextAction).getTime()}
-      fromDate={new Date(item.lastDone).getTime()}
+      targetDate={item.timeToNextAction}
+      fromDate={item.lastDone}
       fillColor={
         item.type === "pet"
           ? item.animalType === AnimalType.DOG

@@ -17,5 +17,5 @@ export const getTimeRemaining = (entry: Entry) => {
 
 
 export const getTimeInMiliseconds = (frequency: number) => {
-  return new Date(Date.now() + frequency * 60 * 60 * 1000)
+  return Date.now() + frequency * 60 * 60 * 1000;
 };
